@@ -4,7 +4,7 @@
 # @FileName: main.py
 # @Software: PyCharm
 
-from Laser import *
+from drivers.Laser import *
 
 
 
@@ -15,17 +15,18 @@ if __name__ == '__main__':
     '''
     读取`key`和`value`的原始数据
     '''
+    print('='*20, 'focus on the raw datas')
     try:
         '''
-        ·异常捕获·，也可不要
+        ·异常捕获·，也可不要. It is save to do so.
         '''
         i = 0  # 计数
         for k, v in mylaser.reader():
             i += 1
             print(k, v)
 
-            if i == 50:
-                # 只测50次
+            if i == 10:
+                # 只测10次
                 mylaser.stop()
                 break
     except Exception as e:
@@ -41,18 +42,19 @@ if __name__ == '__main__':
     '''
     读取`测量状态`和`距离`数据
     '''
+    print('='*20, 'focus on the distance datas')
     mylaser.start()
     try:
         '''
-        ·异常捕获·，也可不要
+        ·异常捕获·，也可不要.It is save to do so.
         '''
         i = 0   # 计数
         for sta, dis in mylaser.get_distance():
             i += 1
-            print(f'状态号：{sta}', f'距离：{dis}mm')
+            print(f'status：{sta}', f'distance：{dis}mm')
 
-            if i == 500:
-                # 只测500次
+            if i == 50:
+                # 只测50次
                 mylaser.stop()
                 break
     except Exception as e:

@@ -3,10 +3,9 @@
 # @Author  : Jiabao Li
 # @FileName: Laser.py
 # @Software: PyCharm
-import warnings
 
-from Serial import *
-from Crc import *
+from drivers.Serial import *
+from drivers.Crc import *
 import struct
 from time import sleep
 
@@ -50,7 +49,6 @@ class MyLaser_base:
             raise
         except:
             self.stop()
-            self.close_port()
             return
 
     def make_frame(self, key, value=0):
@@ -89,9 +87,9 @@ class MyLaser_base:
 
     def stop(self):
         self.serial.sendData(self.make_frame(self.STOP))
+        sleep(0.1)
 
     def close_port(self):
-        sleep(0.3)
         self.serial.portClose()
 
     def start(self):
@@ -119,7 +117,6 @@ class MyLaserLowSpeed(MyLaser_base):
             raise
         except:
             self.stop()
-            self.close_port()
             return
 
 

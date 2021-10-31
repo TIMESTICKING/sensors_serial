@@ -5,7 +5,7 @@
 # @Software: PyCharm
 
 
-from Laser import *
+from drivers.Laser import *
 
 
 
