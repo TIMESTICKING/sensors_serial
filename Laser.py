@@ -32,7 +32,7 @@ class MyLaser_base:
         pass
 
     def reader(self):
-        # try:
+        try:
             for res in self.serial.readData():
                 foo = res[1:-1]
                 keyval = foo[:-1]
@@ -45,8 +45,13 @@ class MyLaser_base:
                     yield self.keyval_decoder(keyval)
                 else:
                     continue
-        # except Exception as e:
-        #     print(traceback.format_exc())
+        except Exception as e:
+            print(traceback.format_exc())
+            raise
+        except:
+            self.stop()
+            self.close_port()
+            return
 
     def make_frame(self, key, value=0):
         frame = self.frame.copy()
@@ -101,13 +106,21 @@ class MyLaserLowSpeed(MyLaser_base):
 
     def get_distance(self, warns=True):
         errs = ['none', '信号过弱', '信号过强', '超出量程', '系统错误']
-        for k, v in self.reader():
-            vs = struct.unpack('>B', v[:1])[0]
-            if k == b'\x07':
-                distance = int.from_bytes(v[1:4], 'big', signed=False)
-                if vs is not 0 and warns:
-                    print(errs[vs])
-                yield vs, distance
+        try:
+            for k, v in self.reader():
+                vs = struct.unpack('>B', v[:1])[0]
+                if k == b'\x07':
+                    distance = int.from_bytes(v[1:4], 'big', signed=False)
+                    if vs is not 0 and warns:
+                        print(errs[vs])
+                    yield vs, distance
+        except Exception as e:
+            print(traceback.format_exc())
+            raise
+        except:
+            self.stop()
+            self.close_port()
+            return
 
 
 if __name__ == '__main__':

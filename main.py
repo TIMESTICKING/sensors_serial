@@ -17,7 +17,7 @@ if __name__ == '__main__':
     '''
     try:
         '''
-        ·异常捕获·保险做法，也可不要
+        ·异常捕获·，也可不要
         '''
         i = 0  # 计数
         for k, v in mylaser.reader():
@@ -44,7 +44,7 @@ if __name__ == '__main__':
     mylaser.start()
     try:
         '''
-        ·异常捕获·保险做法，也可不要
+        ·异常捕获·，也可不要
         '''
         i = 0   # 计数
         for sta, dis in mylaser.get_distance():
