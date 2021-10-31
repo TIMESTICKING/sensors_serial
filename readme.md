@@ -6,6 +6,7 @@ Its datasheet is contained in this repo.
 
 # dir Tree
 
+```
 sensors
  ├── drivers
  │   ├── Crc.py
@@ -16,6 +17,7 @@ sensors
  ├── main.py
  ├── readme.md
  └── stable_test.py
+```
 
 # Usage
 
