@@ -11,6 +11,7 @@ sensors
  ├── CH341SER_LINUX
  │   ├── built-in.a
  │   ├── ch34x.c
+ │   ├── ch34x.ko	# the kernel driver for serial CH341
  │   ├── ch34x.mod
  │   ├── ch34x.mod.c
  │   ├── ch34x.mod.o
