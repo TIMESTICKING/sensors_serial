@@ -24,11 +24,12 @@ class MyLaser_base:
     SADDR = b'\x11'
     SBAUD = b'\x12'
 
-    def __init__(self, port, h=b'\x55', t=b'\xaa', buadRate=115000):
-        self.serial = MySerial(port, h, t, buadRate)
+    def __init__(self, port, h=b'\x55', t=b'\xaa', buadRate=115000, timeout=2):
+        self.port = port
+        self.serial = MySerial(port, h, t, buadRate, timeout)
 
     def keyval_decoder(self, kv):
-        pass
+        return kv[:1], kv[1:]
 
     def reader(self):
         try:
@@ -69,13 +70,17 @@ class MyLaser_base:
         res = lasercrc_fun(by)
         return struct.pack('B', res) if usebyte else res
 
+    def get_info(self):
+        self.serial.sendData(self.make_frame(self.GINFO))
+
+
     def first_start(self, freq=30):
         if freq >= 40:
             warnings.warn('超过40Hz将会有延迟，这是本Serial类的readData()效率不高导致的，可自行修改')
         delay = 0.3
         self.stop()
         sleep(delay)
-        self.serial.sendData(self.make_frame(self.GINFO))
+        self.get_info()
         sleep(delay)
         self.serial.sendData(self.make_frame(self.SDATAFORMAT, 1))
         sleep(delay)
@@ -95,12 +100,22 @@ class MyLaser_base:
     def start(self):
         self.serial.sendData(self.make_frame(self.START))
 
+    def clear_port(self):
+        self.serial.clear_buf()
+
+    def port_verify(self):
+        self.get_info()
+        k, v = self.reader().__next__()
+        if k == b'\x01':
+            print('laser device find port', self.port)
+            return p
+        else:
+            return False
+
+
 
 
 class MyLaserLowSpeed(MyLaser_base):
-
-    def keyval_decoder(self, kv):
-        return kv[:1], kv[1:]
 
     def get_distance(self, warns=True):
         errs = ['none', '信号过弱', '信号过强', '超出量程', '系统错误']
@@ -121,18 +136,10 @@ class MyLaserLowSpeed(MyLaser_base):
 
 
 if __name__ == '__main__':
-    mylaser = MyLaserLowSpeed('COM13')
-    mylaser.start()
-    # mylaser.stop()
-    i = 0
-    for k, v in mylaser.reader():
-        i += 1
-        print(k.hex(), v.hex())
-
-        if i == 600:
-            mylaser.stop()
-            break
-
+    print(find_port(MyLaser_base))
+    # print(MySerial.list_ports())
+    # dev = MyLaser_base('COM7', timeout=1)
+    # dev.get_info()
 
 
 

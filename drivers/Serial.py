@@ -17,11 +17,11 @@ class SM:
 
 class MySerial:
 
-    def __init__(self, port, h=b'\x55', t=b'\xaa', buandRate=115000):
+    def __init__(self, port, h=b'\x55', t=b'\xaa', buandRate=115000, timeout=2):
         self.t = t
         self.h = h
 
-        self.port = serial.Serial(port, buandRate, timeout=2)
+        self.port = serial.Serial(port, buandRate, timeout=timeout)
         if not self.port.isOpen():
             self.port.open()
         # self.start_listen()
@@ -73,13 +73,47 @@ class MySerial:
         self.port.reset_input_buffer()
         self.port.reset_output_buffer()
 
+    @staticmethod
+    def list_ports():
+        ports = serial.tools.list_ports.comports()
+        return list(map(lambda x: (x.name, x.description), ports))
+
     # def start_listen(self):
     #     threading.Thread(target=self.readData).start()
 
+def find_port(dev_class):
+    ports = MySerial.list_ports()
+    for p, discrb in ports:
+        try:
+            dev = None
+            if '蓝牙链接' in discrb or 'bluetooth' in discrb:
+                continue
+            dev = dev_class(p, timeout=1)
+            port_veri = dev.port_verify()
+            if not port_veri:
+                return port_veri
+        except:
+            print(traceback.format_exc())
+            print(p, 'timeout')
+            continue
+        finally:
+            if dev is not None:
+                dev.clear_port()
+                dev.close_port()
+    else:
+        return None
+
+
 
 if __name__ == '__main__':
-    S = MySerial('COM1')
-    S.sendData(b'\x12\x34')
-    for res in S.readData():
-        print(res)
-
+    ats = ['apply_usb_info', 'description', 'device', 'hwid', 'interface', 'location', 'manufacturer', 'name', 'pid', 'product', 'serial_number', 'usb_description', 'usb_info', 'vid']
+    ports = list(serial.tools.list_ports.comports())
+    print(ports)
+    for a in ats:
+        p = ports[0]
+        print(a, getattr(p, a))
+    # for p in ports:
+    #     print(p.name)
+    # print(MySerial.list_ports())
+    # m = MySerial('COM11', timeout=1)
+    # m.sendData('hello'.encode())

@@ -9,7 +9,8 @@ from drivers.Laser import *
 
 
 if __name__ == '__main__':
-    mylaser = MyLaserLowSpeed('COM13')
+    # mylaser = MyLaserLowSpeed('COM13')
+    mylaser = MyLaserLowSpeed(find_port(MyLaser_base))
     mylaser.first_start()   # 初次启动（包含了初始化）
 
     '''
