@@ -588,7 +588,7 @@ static void ch34x_close( struct usb_serial_port *port,
 	unsigned int c_cflag;
 	int bps;
 	long timeout;
-	wait_queue_t wait;
+	//wait_queue_t wait;
 
 #if(LINUX_VERSION_CODE < KERNEL_VERSION(3, 11, 0))
 	dbg_ch34x("%s - port:%d", __func__, port->number);
@@ -794,8 +794,8 @@ static int wait_modem_info( struct usb_serial_port *port,
 		wait_event_interruptible( wq, wait_flag != 0 );
 		wait_flag = 0;
 		// see if a signal did it
-		if( signal_pending(current) ) 
-			return -ERESTARTSYS;
+		//if( signal_pending(current) ) 
+		//	return -ERESTARTSYS;
 
 		spin_lock_irqsave( &priv->lock, flags );
 		status = priv->line_status;
