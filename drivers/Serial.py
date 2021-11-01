@@ -93,7 +93,7 @@ def find_port(dev_class):
             if not port_veri:
                 return port_veri
         except:
-            print(traceback.format_exc())
+            # print(traceback.format_exc())
             print(p, 'timeout')
             continue
         finally:
