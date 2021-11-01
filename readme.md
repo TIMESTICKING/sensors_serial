@@ -8,11 +8,23 @@ Its datasheet is contained in this repo.
 
 ```
 sensors
+ ├── CH341SER_LINUX
+ │   ├── built-in.a
+ │   ├── ch34x.c
+ │   ├── ch34x.mod
+ │   ├── ch34x.mod.c
+ │   ├── ch34x.mod.o
+ │   ├── ch34x.o
+ │   ├── Makefile
+ │   ├── Module.symvers
+ │   ├── modules.order
+ │   └── readme.txt
  ├── drivers
  │   ├── Crc.py
  │   ├── Laser.py
  │   ├── Serial.py
  │   └── __init__.py
+ ├── linux.py
  ├── LPxx-DataSheet_V0.5.pdf
  ├── main.py
  ├── readme.md
