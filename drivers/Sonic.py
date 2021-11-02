@@ -65,10 +65,10 @@ class MySonic:
 
 
 if __name__ == '__main__':
-    # print(find_port(MySonic))
-    S = MySonic(find_port(MySonic))
-    for d in S.get_distance():
-        print('distance:', d, 'mm')
+    print(find_port(MySonic))
+    # S = MySonic(find_port(MySonic))
+    # for d in S.get_distance():
+    #     print('distance:', d, 'mm')
 
 
 
