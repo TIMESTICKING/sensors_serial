@@ -5,7 +5,7 @@
 # @Software: PyCharm
 
 from drivers.Laser import *
-
+from drivers.Sonic import *
 
 
 if __name__ == '__main__':
@@ -14,6 +14,7 @@ if __name__ == '__main__':
     mylaser.first_start()   # 初次启动（包含了初始化）
 
     '''
+    激光
     读取`key`和`value`的原始数据
     '''
     print('='*20, 'focus on the raw datas')
@@ -41,6 +42,7 @@ if __name__ == '__main__':
 
 
     '''
+    激光
     读取`测量状态`和`距离`数据
     '''
     print('='*20, 'focus on the distance datas')
@@ -68,7 +70,13 @@ if __name__ == '__main__':
     mylaser.close_port()    # 关闭串口
 
 
-
+    '''
+    超声波
+    读取`测量状态`和`距离`数据
+    '''
+    S = MySonic(find_port(MySonic))
+    for d in S.get_distance():
+        print('distance:', d, 'mm')
 
 
 

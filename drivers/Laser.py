@@ -31,7 +31,7 @@ class MyLaser_base:
     def keyval_decoder(self, kv):
         return kv[:1], kv[1:]
 
-    def reader(self):
+    def reader(self, only_1_frame=False):
         try:
             for res in self.serial.readData():
                 foo = res[1:-1]
@@ -44,6 +44,8 @@ class MyLaser_base:
                 if crc_veri:
                     yield self.keyval_decoder(keyval)
                 else:
+                    if only_1_frame:
+                        yield 0, 0
                     continue
         except Exception as e:
             print(traceback.format_exc())
@@ -105,12 +107,11 @@ class MyLaser_base:
 
     def port_verify(self):
         self.get_info()
-        k, v = self.reader().__next__()
+        k, v = self.reader(True).__next__()
         if k == b'\x01':
             print('laser device find port', self.port)
-            return p
-        else:
-            return False
+            return self.port
+        return False
 
 
 
