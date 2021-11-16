@@ -76,6 +76,31 @@ class MyLaser_base:
         self.serial.sendData(self.make_frame(self.GINFO))
 
 
+    def get_addr(self):
+        self.serial.sendData(self.make_frame(self.SADDR))
+
+        k, v = self.reader().__next__()
+        if k == b'\x11':
+            return int.from_bytes(v, byteorder='big', signed=False)
+        else:
+            return False
+
+
+    def set_addr(self, addr):
+        assert addr in list(range(1, 256)), 'addr must be in [1, 255]'
+
+        print('setting addr')
+        self.serial.sendData(self.make_frame(self.SADDR, addr))
+        print('getting addr')
+        a = self.get_addr()
+        print('the current addr is ', a)
+        if a == addr:
+            print('setting success!')
+        else:
+            print('setting fail!')
+
+
+
     def first_start(self, freq=30):
         if freq >= 40:
             warnings.warn('超过40Hz将会有延迟，这是本Serial类的readData()效率不高导致的，可自行修改')
@@ -137,11 +162,12 @@ class MyLaserLowSpeed(MyLaser_base):
 
 
 if __name__ == '__main__':
-    print(find_port(MyLaser_base))
+    # print(find_port(MyLaser_base))
     # print(MySerial.list_ports())
-    # dev = MyLaser_base('COM7', timeout=1)
+    # dev = MyLaser_base('COM1', timeout=1)
     # dev.get_info()
-
+    # print(dev.make_frame(dev.SADDR, 254).hex())
+    print(int.from_bytes(b'\x00\xfe', byteorder='big', signed=False))
 
 
 
