@@ -17,7 +17,8 @@ class SM:
 
 class MySerial:
 
-    def __init__(self, port, h=b'\x55', t=b'\xaa', buandRate=115000, timeout=2):
+    def __init__(self, port, h, t, length, buandRate=115000, timeout=2):
+        self.length = length
         self.t = t
         self.h = h
 
@@ -49,6 +50,7 @@ class MySerial:
             # try:
                 read_cnt += 1
                 data = self.port.read()
+                # print(data.hex())
                 if len(data) == 0 or read_cnt > max_read:
                     warnings.warn('串口读取超时')
                     self.portClose()
@@ -60,7 +62,7 @@ class MySerial:
                         sta = SM.findingtail
                 elif sta == SM.findingtail:
                     buf += data
-                    if data == self.t:
+                    if data == self.t and len(buf) == self.length:
                         yield buf
                         read_cnt = 0
                         buf = b''

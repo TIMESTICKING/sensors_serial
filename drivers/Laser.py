@@ -24,9 +24,9 @@ class MyLaser_base:
     SADDR = b'\x11'
     SBAUD = b'\x12'
 
-    def __init__(self, port, h=b'\x55', t=b'\xaa', buadRate=115000, timeout=2):
+    def __init__(self, port, h=b'\x55', t=b'\xaa', length=8, buadRate=115000, timeout=2):
         self.port = port
-        self.serial = MySerial(port, h, t, buadRate, timeout)
+        self.serial = MySerial(port, h, t, length, buadRate, timeout)
 
     def keyval_decoder(self, kv):
         return kv[:1], kv[1:]
