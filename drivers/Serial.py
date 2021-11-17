@@ -168,7 +168,7 @@ def find_port_radarlike(dev_class, addrs=None):
                 dev = dev_class(p, addr=addr, timeout=1)
                 port_addrveri = dev.is_addr_valid()
         except:
-            # print(traceback.format_exc())
+            print(traceback.format_exc())
             print(p, 'timeout')
             continue
         finally:

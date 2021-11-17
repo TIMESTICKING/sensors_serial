@@ -7,7 +7,7 @@
 from drivers.Laser import *
 from drivers.Sonic import *
 from drivers.Radar import *
-
+from drivers.Serial import *
 
 if __name__ == '__main__':
     '''
@@ -18,9 +18,10 @@ if __name__ == '__main__':
     if finder is None:
         print('didnt find any port and address match the device')
         exit(1)
+    print('find port and addr:', finder)
     R = MyRadar(port=finder[0], addr=finder[1])
     R.start(object_num=2, enable_bg_correct=True)   # 目标检测数量2，启动背景获取&纠正
-    for _ in range(50):
+    for _ in range(20):
         print('2 objects distance:', R.snapshot())
 
     exit(1)
