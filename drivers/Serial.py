@@ -100,6 +100,7 @@ class MySerial_headerOnly(MySerial):
         while True:
             read_cnt += 1
             data = self.port.read()
+            # print(data.hex())
             if len(data) == 0 or read_cnt > max_read:
                 warnings.warn('串口读取超时')
                 self.portClose()
@@ -143,6 +144,39 @@ def find_port(dev_class):
                 dev.close_port()
             if port_veri:
                 return port_veri
+    else:
+        return None
+
+
+def find_port_radarlike(dev_class, addrs=None):
+    '''
+    :param dev_class: a Radar-like device, which is addr needed when asking.
+    :param addrs: possible addresses list. default to ['00',]
+    :return: (com*, addr)
+    '''
+    if addrs is None:
+        addrs = ['00']
+    ports = MySerial.list_ports()
+    for p, discrb in ports:
+        try:
+            dev = None
+            port_addrveri = False
+            if '蓝牙链接' in discrb or 'bluetooth' in discrb:
+                continue
+            # 逐个测试addr
+            for addr in addrs:
+                dev = dev_class(p, addr=addr, timeout=1)
+                port_addrveri = dev.is_addr_valid()
+        except:
+            # print(traceback.format_exc())
+            print(p, 'timeout')
+            continue
+        finally:
+            if dev is not None and dev.serial.port.isOpen():
+                dev.clear_port()
+                dev.close_port()
+            if port_addrveri:
+                return port_addrveri
     else:
         return None
 

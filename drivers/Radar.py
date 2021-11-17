@@ -25,7 +25,7 @@ class MyRadar:
         self.measure = bytes(BA(f'55{addr}44'))
 
 
-    def config(self, object_num=1, enable_bg_correct=True):
+    def start(self, object_num=1, enable_bg_correct=True):
         self.cancel_debugging()
         sleep(0.2)
         self.linmindu(1)
@@ -83,6 +83,9 @@ class MyRadar:
 
     def clear_port(self):
         self.serial.clear_buf()
+
+    def close_port(self):
+        self.serial.portClose()
 
     def linmindu(self, magnitude=1):
         '''
@@ -150,39 +153,43 @@ class MyRadar:
 
 
     def is_addr_valid(self):
-        self.serial = MySerial_headerOnly(8, self.port)
-        # todo send something
+        self.serial.portClose()
+        self.serial = MySerial_headerOnly(8, self.port, timeout=1)
+        sleep(0.1)
+        self.linmindu(1)    # send whatever expecting receive sth
         try:
             res = self.serial.readData().__next__()
             cmd = res[2:3]
             fc = res[4:5]
             status = res[5:6]
-            # todo judge
-
-            return self.addr
+            # print(res.hex())
+            if cmd == b'\x03' and fc == b'\x02':
+                return self.port, self.addr
+            else:
+                return False
         except Exception as e:
-            raise
-        except:
             return False
 
 
+# if __name__ == '__main__':
+#     l = MyRadar('com13', addr='00')
+#     l.config(2, True)
+#     # l.shebeidizhi_setting(0)
+#
+#     # l.snapshot()
+#     # l.snapshot()
+#     # l.snapshot()
+#
+#
+#     t = time.time()
+#     for i in range(100):
+#         print(l.snapshot())
+#         lt = t
+#         t = time.time()
+#         print(t - lt)
+
 if __name__ == '__main__':
-    l = MyRadar('com13', addr='00')
-    l.config(2, True)
-    # l.shebeidizhi_setting(0)
-
-    # l.snapshot()
-    # l.snapshot()
-    # l.snapshot()
-
-
-    t = time.time()
-    for i in range(100):
-        print(l.snapshot())
-        lt = t
-        t = time.time()
-        print(t - lt)
-
-
+    l = MyRadar('COM1', addr='00')
+    print(l.is_addr_valid())
 
 
