@@ -150,8 +150,20 @@ class MyRadar:
 
 
     def is_addr_valid(self):
-        # todo
-        pass
+        self.serial = MySerial_headerOnly(8, self.port)
+        # todo send something
+        try:
+            res = self.serial.readData().__next__()
+            cmd = res[2:3]
+            fc = res[4:5]
+            status = res[5:6]
+            # todo judge
+
+            return self.addr
+        except Exception as e:
+            raise
+        except:
+            return False
 
 
 if __name__ == '__main__':

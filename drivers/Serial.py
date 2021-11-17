@@ -17,7 +17,7 @@ class SM:
 
 class MySerial:
 
-    def __init__(self, port, h, t, length, buandRate=115000, timeout=2):
+    def __init__(self, port, h=b'\x55', t=b'\xaa', length=None, buandRate=115000, timeout=2):
         self.length = length
         self.t = t
         self.h = h
@@ -62,7 +62,7 @@ class MySerial:
                         sta = SM.findingtail
                 elif sta == SM.findingtail:
                     buf += data
-                    if data == self.t and len(buf) == self.length:
+                    if data == self.t and (len(buf) == self.length or self.length is None):
                         yield buf
                         read_cnt = 0
                         buf = b''
@@ -86,8 +86,8 @@ class MySerial:
 
 
 class MySerial_headerOnly(MySerial):
-    def __init__(self, frame_len, *args):
-        super(MySerial_headerOnly, self).__init__(*args)
+    def __init__(self, frame_len, *args, **kwargs):
+        super(MySerial_headerOnly, self).__init__(*args, **kwargs)
         self.frame_len = frame_len
 
     def readData(self):

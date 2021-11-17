@@ -14,7 +14,7 @@ class MySonic:
     def __init__(self, port, addr=b'\xff', h=b'\xff', buadRate=9600, timeout=2):
         self.addr = addr
         self.port = port
-        self.serial = MySerial_headerOnly(4, port, h, None, buadRate, timeout)
+        self.serial = MySerial_headerOnly(4, port, h=h, buandRate=buadRate, timeout=timeout)
 
 
     def send_addr(self):
