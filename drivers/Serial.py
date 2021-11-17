@@ -82,7 +82,7 @@ class MySerial:
     @staticmethod
     def list_ports():
         ports = serial.tools.list_ports.comports()
-        return list(map(lambda x: (x.name, x.description), ports))
+        return list(map(lambda x: (x.device, x.description), ports))
 
 
 class MySerial_headerOnly(MySerial):
