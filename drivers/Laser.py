@@ -31,6 +31,7 @@ class MyLaser_base:
     def keyval_decoder(self, kv):
         return kv[:1], kv[1:]
 
+
     def reader(self, only_1_frame=False):
         try:
             for res in self.serial.readData():
@@ -101,7 +102,10 @@ class MyLaser_base:
 
 
 
-    def first_start(self, freq=30):
+    def first_start(self, freq=30, measure_mode=1):
+        '''
+        :param measure_mode: 0:连续测量；1:主动问询
+        '''
         if freq >= 40:
             warnings.warn('超过40Hz将会有延迟，这是本Serial类的readData()效率不高导致的，可自行修改')
         delay = 0.3
@@ -111,11 +115,13 @@ class MyLaser_base:
         sleep(delay)
         self.serial.sendData(self.make_frame(self.SDATAFORMAT, 1))
         sleep(delay)
-        self.serial.sendData(self.make_frame(self.SMEASURE))
+        self.serial.sendData(self.make_frame(self.SMEASURE, value=measure_mode))
         sleep(delay)
         self.serial.sendData(self.make_frame(self.SFREQ, freq))
         sleep(delay)
         self.start()
+        sleep(0.1)
+        self.clear_port()
 
     def stop(self):
         self.serial.sendData(self.make_frame(self.STOP))
@@ -142,11 +148,28 @@ class MyLaser_base:
 
 
 class MyLaserLowSpeed(MyLaser_base):
+    def snapshot(self, times=1):
+        '''
+        :param times: 测量次数，默认1
+        :return: times 个结果
+        '''
+        res = []
+        for _ in range(times):
+            self.start()
+            foo = self.get_distance(False, 1).__next__()
+            res.append(foo)
 
-    def get_distance(self, warns=True):
+        return res
+
+    def get_distance(self, warns=True, times=0):
         errs = ['none', '信号过弱', '信号过强', '超出量程', '系统错误']
+        read_time_cnt = 0
         try:
             for k, v in self.reader():
+                if times > 0 and read_time_cnt >= times:
+                    return
+                read_time_cnt += 1
+
                 vs = struct.unpack('>B', v[:1])[0]
                 if k == b'\x07':
                     distance = int.from_bytes(v[1:4], 'big', signed=False)

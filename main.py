@@ -10,36 +10,45 @@ from drivers.Radar import *
 from drivers.Serial import *
 
 if __name__ == '__main__':
-    '''
-    毫米波雷达
-    读取距离
-    '''
-    finder = find_port_radarlike(MyRadar, ['00'])   # 自动寻找串口，并提供可能的addr列表
-    if finder is None:
-        print('didnt find any port and address match the device')
-        exit(1)
-    print('find port and addr:', finder)
-    R = MyRadar(port=finder[0], addr=finder[1])
-    R.start(object_num=2, enable_bg_correct=True)   # 目标检测数量2，启动背景获取&纠正
-    for _ in range(20):
-        print('2 objects distance:', R.snapshot())
+    # '''
+    # 毫米波雷达
+    # 读取距离
+    # '''
+    # finder = find_port_radarlike(MyRadar, ['00'])   # 自动寻找串口，并提供可能的addr列表
+    # if finder is None:
+    #     print('didnt find any port and address match the device')
+    #     exit(1)
+    # print('find port and addr:', finder)
+    # R = MyRadar(port=finder[0], addr=finder[1])
+    # R.start(object_num=2, enable_bg_correct=True)   # 目标检测数量2，启动背景获取&纠正
+    # for _ in range(20):
+    #     print('2 objects distance:', R.snapshot())
+    #
+    # exit(1)
+    #
+    # '''
+    # 超声波
+    # 读取`测量状态`和`距离`数据
+    # '''
+    # S = MySonic(find_port(MySonic))
+    # for d in S.get_distance():
+    #     print('distance:', d, 'mm')
 
-    exit(1)
-
     '''
-    超声波
-    读取`测量状态`和`距离`数据
+    激光主动问询
     '''
-    S = MySonic(find_port(MySonic))
-    for d in S.get_distance():
-        print('distance:', d, 'mm')
+    mylaser = MyLaserLowSpeed('COM13')
+    # mylaser = MyLaserLowSpeed(find_port(MyLaser_base))
+    mylaser.first_start(measure_mode=1)   # 初次启动（包含了初始化）
+    res = mylaser.snapshot(times=3)   # 要测3次 res = [(vs1, dis1), (vs2, dis2) ...]
+    print(res)
 
 
     '''
     激光2钟示例
     '''
-    # mylaser = MyLaserLowSpeed('COM13')
-    mylaser = MyLaserLowSpeed(find_port(MyLaser_base))
+    mylaser = MyLaserLowSpeed('COM13')
+    # mylaser = MyLaserLowSpeed(find_port(MyLaser_base))
     mylaser.first_start()   # 初次启动（包含了初始化）
 
     '''
@@ -85,7 +94,7 @@ if __name__ == '__main__':
             i += 1
             print(f'status：{sta}', f'distance：{dis}mm')
 
-            if i == 50:
+            if i == 2000:
                 # 只测50次
                 mylaser.stop()
                 break
