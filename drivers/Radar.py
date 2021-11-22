@@ -56,10 +56,13 @@ class MyRadar:
                 # print(allres)
                 addr, pos, mag, dis, ver, crc = allres
 
-                if sum(foo[:-1]) & 0xff == crc:
+                if sum(foo[1:-1]) & 0xff == crc:
                     # crc checked
                     alldis.append(dis)
 
+                # print(foo.hex())
+                # print(len(alldis))
+                # print(self.object_number)
                 if len(alldis) == self.object_number:
                     # 到达设置的目标数
                     break
@@ -145,6 +148,7 @@ class MyRadar:
         a[2:3] = struct.pack('B', newaddr)
         a[3:5] = self._crc_cal(a[0:3])
 
+        # print(a.hex())
         self._send(a)
 
     def cancel_debugging(self):
@@ -156,9 +160,11 @@ class MyRadar:
         self.serial.portClose()
         self.serial = MySerial_headerOnly(8, self.port, timeout=1)
         sleep(0.1)
+        self.clear_port()
         self.linmindu(1)    # send whatever expecting receive sth
         try:
             res = self.serial.readData().__next__()
+            # print(res.hex())
             cmd = res[2:3]
             fc = res[4:5]
             status = res[5:6]
@@ -171,14 +177,15 @@ class MyRadar:
             return False
 
 
-# if __name__ == '__main__':
-#     l = MyRadar('com13', addr='00')
-#     l.config(2, True)
-#     # l.shebeidizhi_setting(0)
+if __name__ == '__main__':
+    l = MyRadar('com13', addr='05')
+    # l.reset()
+    # l.start(2, True)
+    l.shebeidizhi_setting(1)
 #
-#     # l.snapshot()
-#     # l.snapshot()
-#     # l.snapshot()
+    # print(l.snapshot())
+    # print(l.snapshot())
+    # print(l.snapshot())
 #
 #
 #     t = time.time()
@@ -188,8 +195,8 @@ class MyRadar:
 #         t = time.time()
 #         print(t - lt)
 
-if __name__ == '__main__':
-    l = MyRadar('COM1', addr='00')
-    print(l.is_addr_valid())
+# if __name__ == '__main__':
+#     l = MyRadar('COM13', addr='00')
+#     print(l.is_addr_valid())
 
 

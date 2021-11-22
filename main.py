@@ -10,21 +10,21 @@ from drivers.Radar import *
 from drivers.Serial import *
 
 if __name__ == '__main__':
-    # '''
-    # 毫米波雷达
-    # 读取距离
-    # '''
-    # finder = find_port_radarlike(MyRadar, ['00'])   # 自动寻找串口，并提供可能的addr列表
-    # if finder is None:
-    #     print('didnt find any port and address match the device')
-    #     exit(1)
-    # print('find port and addr:', finder)
-    # R = MyRadar(port=finder[0], addr=finder[1])
-    # R.start(object_num=2, enable_bg_correct=True)   # 目标检测数量2，启动背景获取&纠正
-    # for _ in range(20):
-    #     print('2 objects distance:', R.snapshot())
-    #
-    # exit(1)
+    '''
+    毫米波雷达
+    读取距离
+    '''
+    finder = find_port_radarlike(MyRadar, ['00','01','05'])   # 自动寻找串口，并提供可能的addr列表
+    if finder is None:
+        print('didnt find any port and address match the device')
+        exit(1)
+    print('find port and addr:', finder)
+    R = MyRadar(port=finder[0], addr=finder[1])
+    R.start(object_num=3, enable_bg_correct=True)   # 目标检测数量2，启动背景获取&纠正
+    for _ in range(200):
+        print('2 objects distance:', R.snapshot())
+
+    exit(1)
     #
     # '''
     # 超声波
